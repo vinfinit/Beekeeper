@@ -19,10 +19,16 @@ app.post('/process', function (req, res) {
     form.parse(req);
 
     form.on('fileBegin', (name, file) => {
+        let ext = '';
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
         }
-        file.path = `${dir}/${file.name}`;
+        if (file.name.includes('.png') || file.name.includes('.jpeg') || file.name.includes('.jpg')) {
+            ext = '';
+        } else {
+            ext = '.jpg'
+        }
+        file.path = `${dir}/${file.name}${ext}`;
 
         fs.writeFile(file.path, file, function (err) {
             if (err) {
