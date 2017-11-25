@@ -31,7 +31,7 @@ app.post('/process', function (req, res) {
 
             console.log("The file was saved!");
 
-            return utils.processImage(`${__dirname}/uploads`)
+            return utils.processImage(dir)
                 .then(output => {
                     console.log(output);
                     return Promise.promisify(fs.readFile)(`${generatedEmbeddings}/reps.csv`)

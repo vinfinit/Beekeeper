@@ -2,6 +2,8 @@ const util = require('util');
 const fs = require('fs');
 const Promise = require('bluebird');
 const exec = Promise.promisify(require('child_process').exec);
+const rimraf = require('rimraf');
+
 let counter = 0;
 
 const openfacePath = '/root/openface';
@@ -13,13 +15,13 @@ let utils = {};
 utils.processImage = function (dirPath) {
 	const uuid = Date.now();
 
-	return Promise.promisify(fs.unlink)(`${alignedImages}/cache.t7`)
-		.catch(() => {})
+	return Promise.promisify(rimraf)(alignedImages)
+		.catch(console.error)
 		.finally(() => {
 			return exec(`.${openfacePath}/util/align-dlib.py ${dirPath} align outerEyesAndNose ${alignedImages} --size 96`)
 		})
 		.then(() => {
-			return exec(`.${openfacePath}/batch-represent/main.lua -outDir ${generatedEmbeddings} -data ${alignedImages}/`)
+			return exec(`.${openfacePath}/batch-represent/main.lua -outDir ${generatedEmbeddings} -data ${alignedImages}`)
 		})
 };
 
