@@ -34,17 +34,12 @@ app.post('/process', function (req, res) {
             return utils.processImage(`${__dirname}/uploads`)
                 .then(output => {
                     console.log(output);
-                    Promise.promisify(fs.readFile)(`${generatedEmbeddings}/reps.csv`)
-                        .then(content => res.send(content))
+                    return Promise.promisify(fs.readFile)(`${generatedEmbeddings}/reps.csv`)
                 })
-                .then((res) => {
-                    console.log(res);
-                    res.send('Hello world from Distelli & Docker!');
-                })
+                .then(content => res.send(content))
                 .catch((err) => {
                     console.error(err.stack);
                     res.status(500).send('Something broke!');
-                    exit(1);
                 });
         });
     });
