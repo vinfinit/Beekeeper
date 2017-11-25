@@ -8,8 +8,12 @@ const PORT = 9090;
 
 
 app.post('/', function (req, res) {
+	console.time('python');
 	exec('python ../build/test_script.py /Users/uladzimir/projects/wth/server/generated-embeddings/reps.csv')
-		.then(output => res.json(output))
+		.then(output => {
+			console.timeEnd('python');
+			res.json(output)
+		})
 		.catch(err => res.status(500).send(err))
 });
 
