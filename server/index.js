@@ -39,12 +39,12 @@ app.post('/process', function (req, res) {
                 })
                 .then(content => {
                     return request.post({
-                            url: 'http://localhost:9090/',
-                            form: {content: content}
-                        },
-                        function (err, httpResponse, body) {
-                            res.send(content)
-                        });
+                        url: 'http://10.168.0.123:9090/',
+                        form: {content: content}
+                    },
+                    function (err, httpResponse, body) {
+                        res.send(body)
+                    });
                 })
                 .catch((err) => {
                     console.error(err.stack);
