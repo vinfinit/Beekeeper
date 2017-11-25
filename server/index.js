@@ -18,22 +18,36 @@ app.post('/process', function (req, res) {
     form.parse(req);
 
     form.on('fileBegin', (name, file) => {
-        file.path = `${dir}/${file.name}`
-        Promise.promisify(fs.writeFile)(file.path, file)
-            .then(() => {
-                console.log("The file was saved!");
-                return utils.processImage(`${__dirname}/uploads`) 
-            })
-            .then(output => {
-                console.log(output);
-                Promise.promisify(fs.readFile)(`${generatedEmbeddings}/reps.csv`)
-                    .then(content => res.send(content))
-            })
-            .catch(err => {
-                console.error(err.stack);
-                res.status(500).send('Something broken!');
-            });
-    })
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+        }
+        file.path = `${dir}/${file.name}`;
+
+        fs.writeFile(file.path, file, function(err) {
+            if(err) {
+                console.log(err);
+                res.status(500).send('Something broke!' + err);
+            }
+
+            console.log("The file was saved!");
+
+            return utils.processImage(`${__dirname}/uploads`)
+                .then(output => {
+                    console.log(output);
+                    Promise.promisify(fs.readFile)(`${generatedEmbeddings}/reps.csv`)
+                        .then(content => res.send(content))
+                })
+                .then((res) => {
+                    console.log(res);
+                    res.send('Hello world from Distelli & Docker!');
+                })
+                .catch((err) => {
+                    console.error(err.stack);
+                    res.status(500).send('Something broke!');
+                    exit(1);
+                });
+        });
+    });
 });
 
 app.listen(PORT);
