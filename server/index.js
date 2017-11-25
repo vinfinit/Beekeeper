@@ -2,6 +2,7 @@ const express = require('express');
 const formidable = require('formidable');
 const fs = require('fs');
 const Promise = require('bluebird');
+const request = require('request');
 
 const app = express();
 const PORT = 8088;
@@ -18,13 +19,13 @@ app.post('/process', function (req, res) {
     form.parse(req);
 
     form.on('fileBegin', (name, file) => {
-        if (!fs.existsSync(dir)){
+        if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
         }
         file.path = `${dir}/${file.name}`;
 
-        fs.writeFile(file.path, file, function(err) {
-            if(err) {
+        fs.writeFile(file.path, file, function (err) {
+            if (err) {
                 console.log(err);
                 res.status(500).send('Something broke!' + err);
             }
@@ -36,7 +37,15 @@ app.post('/process', function (req, res) {
                     console.log(output);
                     return Promise.promisify(fs.readFile)(`${generatedEmbeddings}/reps.csv`)
                 })
-                .then(content => res.send(content))
+                .then(content => {
+                    return request.post({
+                            url: 'http://localhost:9090/',
+                            form: {content: content}
+                        },
+                        function (err, httpResponse, body) {
+                            res.send(content)
+                        });
+                })
                 .catch((err) => {
                     console.error(err.stack);
                     res.status(500).send('Something broke!');
