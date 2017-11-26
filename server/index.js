@@ -4,12 +4,14 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const request = require('request');
 
+const db = require('./db');
 const app = express();
 const PORT = 8088;
 
 const utils = require('./utils');
 
 const generatedEmbeddings = '/host/Users/uladzimir/projects/wth/server/generated-embeddings';
+const user = require("./models/users");
 
 app.post('/process', function (req, res) {
     console.log('/process');
@@ -43,7 +45,18 @@ app.post('/process', function (req, res) {
                             form: {content: content}
                         },
                         function (err, httpResponse, body) {
-                            res.send(content)
+                            user.create(
+                                {
+                                    phone: Date.now(),
+                                    rating: JSON.parse(JSON.parse(content))[0],
+                                    url: file.path
+                                }, function (err, result) {
+                                    if (err) {
+                                        res.status(500).send('can not find');
+                                    }
+                                    console.log(result);
+                                    res.send(content)
+                                });
                         });
                 })
                 .catch((err) => {
@@ -54,7 +67,28 @@ app.post('/process', function (req, res) {
     });
 });
 
+app.post('/user', function (req, res) {
+    var newUser = user({
+        phone: Date.now(),
+        rating: "2222",
+        url: "dsds"
+    });
+
+    newUser.save(function (err) {
+        if (err) throw err;
+
+        res.send('User created!');
+    });
+});
+
+
+app.get('/users', function (req, res) {
+    user.find({}, function (err, users) {
+        if (err) throw err;
+
+        res.send(users);
+    });
+});
+
 app.listen(PORT);
 console.log('Running on http://localhost:' + PORT);
-
-// utils.processImage(__dirname + '/uploads')
