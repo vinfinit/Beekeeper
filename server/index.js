@@ -37,7 +37,7 @@ app.post('/process', function (req, res) {
         fs.writeFile(file.path, file, function (err) {
             if (err) {
                 console.log(err);
-                res.status(500).send('Something broke!' + err);
+                return res.status(500).send('Something broke!' + err);
             }
 
             console.log("The file was saved!");
