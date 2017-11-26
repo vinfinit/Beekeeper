@@ -6,6 +6,7 @@ const request = require('request');
 const serveStatic = require('serve-static');
 const bodyParser = require('body-parser');
 const path = require('path');
+const _ = require('lodash');
 
 const db = require('./db');
 const app = express();
@@ -78,16 +79,28 @@ app.post('/process', function (req, res) {
                         function (err, httpResponse, body) {
                             console.timeEnd('process');
                             console.timeEnd('request');
+                            rating = JSON.parse(JSON.parse(body))[0]
+                            console.log('old rating: ', rating);
+                            const [left, right] = [0.5, 0.85];
+                            if (rating < left) {
+                                rating = 0
+                            } else if (rating >= left && rating <= right) {
+                                rating = (rating-left)/(right-left)
+                            } else {
+                                rating = 1
+                            }
+                            console.log('new rating: ', rating);
                             saveUser({
                                 phone: Date.now(),
-                                rating: JSON.parse(JSON.parse(body))[0]
+                                rating: rating,
+                                url: `/static/images/${now}/${file.name}${ext}`
                             }).then(id => {
-                                res.send({content: body, id: id, url: `/static/images/${now}/${file.name}${ext}`})
+                                res.send({content: rating, id: id, url: `/static/images/${now}/${file.name}${ext}`})
                             });
                         });
                 })
                 .catch((err) => {
-                    console.error(err.stack);
+                    console.error('Our error:', err.stack);
                     res.status(500).send('Something broke!');
                 });
         });
@@ -109,7 +122,12 @@ app.post('/user', bodyParser.json(), function (req, res) {
 
 app.get('/users', function (req, res) {
     user.find({}, function (err, users) {
-        if (err) throw err;
+        if (err) {
+            return res.status(500).send()
+        }
+        users.sort((a,b) => {
+            return b.rating - a.rating
+        })
 
         res.send(users);
     });

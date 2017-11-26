@@ -19,7 +19,7 @@ utils.processImage = function (dirPath) {
 
 	return Promise.promisify(rimraf)(alignedImages)
 		.catch(console.error)
-		.delay(500)
+		.delay(1000)
 		.finally(() => {
 			return exec(`ls ${dirPath}`)
 				.then((o) => {
