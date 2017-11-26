@@ -20,14 +20,6 @@ const schema = new mongoose.Schema({
     }
 }, { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } });
 
-schema.pre("save", function (next) {
-    console.log('save');
-});
-
-schema.pre("update", function (next) {
-    console.log('update');
-});
-
 schema.methods.insertOrUpdate = function (newUser) {
     console.log(newUser);
 };

@@ -14,6 +14,18 @@ const utils = require('./utils');
 const generatedEmbeddings = '/host/Users/uladzimir/projects/wth/server/generated-embeddings';
 const user = require("./models/users");
 
+let saveUser = (options) => {
+    return new Promise((resolve, reject) => {
+        let newUser = new user(options);
+
+        newUser.save(function (err, result) {
+            if (err) throw err;
+            resolve(result._doc._id.toString());
+        });
+    });
+};
+
+
 app.post('/process', function (req, res) {
     console.time('process');
     const dir = `${__dirname}/uploads/${Date.now()}`;
@@ -55,14 +67,19 @@ app.post('/process', function (req, res) {
                     console.timeEnd('reps.csv');
                     console.time('request');
                     return request.post({
-                        url: 'http://10.168.0.123:9090/',
-                        form: {content: content}
-                    },
-                    function (err, httpResponse, body) {
-                        console.timeEnd('process');
-                        console.timeEnd('request');
-                        res.send(body)
-                    });
+                            url: 'http://10.168.0.123:9090/',
+                            form: {content: content}
+                        },
+                        function (err, httpResponse, body) {
+                            console.timeEnd('process');
+                            console.timeEnd('request');
+                            saveUser({
+                                photo: Date.now(),
+
+                            }).then(res => {
+                                res.send({content: body, id: res})
+                            });
+                        });
                 })
                 .catch((err) => {
                     console.error(err.stack);
@@ -73,16 +90,35 @@ app.post('/process', function (req, res) {
 });
 
 app.post('/user', function (req, res) {
-    var newUser = user({
+    var newUser = new user({
         phone: Date.now(),
         rating: "2222",
-        url: "dsds"
+        url: "dsds",
+        description: "dsds",
     });
 
-    newUser.save(function (err) {
+    newUser.update({_id: req.params.id}, {
+        phone: Date.now(),
+        rating: "2222",
+        url: "dsds",
+        description: "dsds",
+    }, function (err, result) {
         if (err) throw err;
+        res.send(result._doc._id.toString());
+    });
+});
 
-        res.send('User created!');
+app.put('/user', function (req, res) {
+    var newUser = new user({
+        phone: Date.now(),
+        rating: "2222",
+        url: "dsds",
+        description: "dsds",
+    });
+
+    newUser.save(function (err, result) {
+        if (err) throw err;
+        res.send(result._doc._id.toString());
     });
 });
 
