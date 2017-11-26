@@ -15,13 +15,20 @@ let utils = {};
 utils.processImage = function (dirPath) {
 	const uuid = Date.now();
 
+	console.log(`.${openfacePath}/util/align-dlib.py ${dirPath} align outerEyesAndNose ${alignedImages} --size 96`);
+
 	return Promise.promisify(rimraf)(alignedImages)
 		.catch(console.error)
+		.delay(500)
 		.finally(() => {
-			return exec(`.${openfacePath}/util/align-dlib.py ${dirPath} align outerEyesAndNose ${alignedImages} --size 96`)
+			return exec(`ls ${dirPath}`)
+				.then((o) => {
+					console.log('!!!!!!!!', o);
+					return exec(`./${openfacePath}/util/align-dlib.py ${dirPath} align outerEyesAndNose ${alignedImages} --size 96`)
+				})
 		})
 		.then(() => {
-			return exec(`.${openfacePath}/batch-represent/main.lua -outDir ${generatedEmbeddings} -data ${alignedImages}`)
+			return exec(`./${openfacePath}/batch-represent/main.lua -outDir ${generatedEmbeddings} -data ${alignedImages}`)
 		})
 };
 
