@@ -4,10 +4,14 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const request = require('request');
 const serveStatic = require('serve-static');
+const bodyParser = require('body-parser');
+const path = require('path');
 
 const db = require('./db');
 const app = express();
 const PORT = 8088;
+
+const ip = 'http://10.168.0.123';
 
 const utils = require('./utils');
 
@@ -28,7 +32,8 @@ let saveUser = (options) => {
 
 app.post('/process', function (req, res) {
     console.time('process');
-    const dir = `${__dirname}/uploads/${Date.now()}`;
+    const now = Date.now();
+    const dir = `${__dirname}/uploads/${now}`;
     const form = new formidable.IncomingForm();
 
     form.parse(req);
@@ -67,17 +72,17 @@ app.post('/process', function (req, res) {
                     console.timeEnd('reps.csv');
                     console.time('request');
                     return request.post({
-                            url: 'http://10.168.0.123:9090/',
+                            url: `${ip}:9090/`,
                             form: {content: content}
                         },
                         function (err, httpResponse, body) {
                             console.timeEnd('process');
                             console.timeEnd('request');
                             saveUser({
-                                photo: Date.now(),
-
-                            }).then(res => {
-                                res.send({content: body, id: res})
+                                phone: Date.now(),
+                                rating: JSON.parse(JSON.parse(body))[0]
+                            }).then(id => {
+                                res.send({content: body, id: id, url: `/static/images/${now}/${file.name}${ext}`})
                             });
                         });
                 })
@@ -89,36 +94,15 @@ app.post('/process', function (req, res) {
     });
 });
 
-app.post('/user', function (req, res) {
-    var newUser = new user({
-        phone: Date.now(),
-        rating: "2222",
-        url: "dsds",
-        description: "dsds",
-    });
+app.post('/user', bodyParser.json(), function (req, res) {
+    var newUser = {
+        phone: req.body.phone,
+        rating: req.body.rating
+    };
 
-    newUser.update({_id: req.params.id}, {
-        phone: Date.now(),
-        rating: "2222",
-        url: "dsds",
-        description: "dsds",
-    }, function (err, result) {
+    user.update({_id: req.body.id}, newUser, function (err, result) {
         if (err) throw err;
-        res.send(result._doc._id.toString());
-    });
-});
-
-app.put('/user', function (req, res) {
-    var newUser = new user({
-        phone: Date.now(),
-        rating: "2222",
-        url: "dsds",
-        description: "dsds",
-    });
-
-    newUser.save(function (err, result) {
-        if (err) throw err;
-        res.send(result._doc._id.toString());
+        res.send(200);
     });
 });
 
@@ -131,7 +115,7 @@ app.get('/users', function (req, res) {
     });
 });
 
-app.use('/static/images', serveStatic('./uploads/'));
+app.use('/static/images', express.static(path.join(__dirname, 'uploads')));
 
 app.listen(PORT);
 console.log('Running on http://localhost:' + PORT);
