@@ -3,6 +3,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 const Promise = require('bluebird');
 const request = require('request');
+const serveStatic = require('serve-static');
 
 const db = require('./db');
 const app = express();
@@ -93,6 +94,8 @@ app.get('/users', function (req, res) {
         res.send(users);
     });
 });
+
+app.use('/static/images', serveStatic('./uploads/'));
 
 app.listen(PORT);
 console.log('Running on http://localhost:' + PORT);
