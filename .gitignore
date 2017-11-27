@@ -1,2 +1,7 @@
 node_modules
+uploads
+aligned-images
+generated-embeddings
 .idea
+.ipynb_checkpoints/
+.DS_Store
