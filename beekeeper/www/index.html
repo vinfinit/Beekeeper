@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src * gap://ready file:; style-src 'self' 'unsafe-inline' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src * data: 'unsafe-inline'; media-src * blob:"> 
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <title>Beekeeper</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <link rel="stylesheet" href="css/onsenui.css">
+    <link rel="stylesheet" href="css/onsen-css-components.min.css">
+    <script src="js/res/onsenui.min.js"></script>
+
+    <script src="js/res/jquery.min.js"></script>
+
+    <script type="text/javascript" src="js/res/request.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  </head>
+  <body>
+
+    <ons-splitter>
+        <ons-splitter-side id="menu" side="right" width="220px" collapse swipeable>
+            <ons-page>
+                <ons-list>
+                    <ons-list-header>
+                        <img src="../www/img/icon-oe.png"/>
+                    </ons-list-header>
+                    <ons-list-title>Menu</ons-list-title>
+                    <ons-list-item onclick="fn.logout();" tappable>
+                        <div class="left">
+                            <ons-icon fixed-width class="list-item__icon" icon="ion-log-out"></ons-icon>
+                        </div>
+                        <div class="center">
+                            Logout
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </ons-page>
+        </ons-splitter-side>
+        <ons-splitter-content>
+            <ons-navigator id="myNavigator" page="home.html"></ons-navigator>
+        </ons-splitter-content>
+    </ons-splitter>
+
+    <template id="home.html">
+        <ons-page>
+            <ons-toolbar  id="beekeeper_toolbar">
+                <div  class="center">Beekeeper</div>
+                <!-- <div class="right">
+                    <ons-toolbar-button onclick="fn.open();">
+                        <ons-icon  icon="ion-navicon, material:md-menu"></ons-icon>
+                    </ons-toolbar-button>
+                </div> -->
+            </ons-toolbar>
+            
+            <ons-tabbar swipeable hide-tabs="false" modifier="material" position="auto">
+                <ons-tab  page="tab1.html" active>
+                    <ons-icon size="32px, material:24px" style=" margin-right: 5px;" icon="ion-android-upload"></ons-icon>
+                    <span style="font-size: 14px; ">Upload</span>
+                </ons-tab>
+                <ons-tab page="tab2.html">
+                    <ons-icon size="32px, material:24px" style=" margin-right: 5px;"icon="ion-android-star"></ons-icon>
+                    <span style="font-size: 14px; ">Raiting</span>
+                </ons-tab>
+            </ons-tabbar>
+        </ons-page>
+    </template>
+
+
+    <template id="tab1.html">
+        <ons-page id="Tab1">
+                <!-- <section style="padding: 10px">
+                    <ons-button  modifier="large" onclick="fn.createPhoto();">Create photo</ons-button>
+                </section>
+                <section style="padding: 10px">
+                    <ons-button modifier="large" onclick="fn.getPhoto();">Upload photo</ons-button>
+                </section>
+                <section style="padding: 10px">
+                    <ons-button modifier="large" onclick="fn.showDialog();">Show dialog</ons-button>
+                </section> -->
+                <ons-row>
+                        <ons-col onclick="fn.createPhoto();" style="padding: 10px;" width="50%" vertical-align='center'>
+                                <div style="height: 70vh; margin-top: 20px; text-align: center; border: 2px dashed rgb(173, 173, 173); border-radius: 10px;">
+                                    <div style="margin-top: 110%;">
+                                        <ons-icon size="62px, material:64px" style="color: rgb(173, 173, 173);" icon="ion-android-camera"></ons-icon>
+                                    </div>
+                                </div>
+                        </ons-col>
+                        <ons-col onclick="fn.getPhoto();" style="padding: 10px;" width="50%" vertical-align='center'>
+                                <div style="height: 70vh;  margin-top: 20px; text-align: center; border: 2px dashed rgb(173, 173, 173); border-radius: 10px;">
+                                    <div style="margin-top: 110%;">
+                                        <ons-icon size="62px, material:64px" style="color: rgb(173, 173, 173);" icon="ion-android-folder"></ons-icon>
+                                    </div>
+                                </div>
+                        </ons-col>
+                </ons-row>
+                
+                
+        </ons-page>
+    </template>
+        
+    <template id="tab2.html">
+        <ons-page id="Tab2">
+        </ons-page>
+    </template>
+
+    <ons-dialog id="dialog-result">
+        <div style="text-align: center; padding: 10px;">
+            <p style="font-size: 24px;" id="dialog-text"><p>
+            <p style="font-size: 24px;" id="dialog-rait"></p>
+            <img width="100%" src="" id="photo_lol"/ >
+            <p>
+                <ons-button onclick="fn.hideDialog('dialog-result')">Close</ons-button>
+            </p>
+        </div>
+    </ons-dialog>
+
+    <ons-modal id="modal-dialog">
+        <p style="text-align: center">
+            Wait
+            <ons-icon icon="fa-spinner" spin></ons-icon>
+        </p>
+    </ons-modal>
+
+    <style type="text/css">
+        .stories-tab {
+          padding: 8px 15px;
+          background-color: #f6f6f6;
+          height: 75px;
+          font-size: 12px
+        }
+  
+        .story {
+          display: inline-table;
+        }
+  
+        .story p {
+          width: 100%;
+          max-width: 50px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 0;
+          text-transform: none
+        }
+  
+        .story-thumbnail-wraper {
+          text-align: center;
+          border-radius: 50%;
+        }
+  
+        .story-thumbnail {
+          padding: 2px;
+          width: 45px;
+          border-radius: 50%;
+          vertical-align: middle;
+        }
+  
+        .story-thumbnail:active {
+          width: 40px;
+          transition: width 0.1s, height 0.1s;
+        }
+  
+        .unread {
+          border: 3px solid #d31010;
+        }
+  
+        .read {
+          border: 2px solid #afafaf;
+        }
+  
+        .post {
+          margin: 0px;
+          padding: 0px 0px 15px;
+          font-size: 14px;
+          border-bottom: 1px solid rgba(175, 175, 175, 0.43);
+          border-radius: 0;
+        }
+  
+        .post_title {
+          padding-left: 10px;
+        }
+  
+        .post-caption {
+          padding-left: 10px;
+        }
+  
+        .post-like-info {
+          margin-bottom: 5px;
+          padding-left: 10px;
+        }
+  
+        .post-image {
+          width: 100%;
+        }
+  
+        .post-time {
+          font-size: 10px;
+          opacity: 0.7;
+          margin-top: 5px;
+          padding-left: 10px;
+        }
+  
+        .post-like {
+          opacity: 0;
+          width: 100%;
+          position: absolute;
+          top: 25%;
+          color: white;
+          transition: opacity 0.4s;
+        }
+  
+        .post-button-bar {
+          height: 40px;
+          padding-left: 0px;
+        }
+  
+        .post-button {
+          font-size: 26px;
+          color: #1f1f21;
+          line-height: 26px;
+        }
+  
+        .corner-button {
+          color: black;
+          font-size: 25px;
+          padding-right: 0;
+        }
+  
+        .like {
+          color: red;
+        }
+  
+        .list-item__thumbnail {
+          border-radius: 50%;
+        }
+      </style>
+
+
+  </body>
+</html>
