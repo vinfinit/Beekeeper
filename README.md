@@ -11,7 +11,7 @@ Application was moved to 3 separate repositories:
 2. [beekeeper-server](https://github.com/vinfinit/beekeeper-server) - main node.js server
 3. [beekeeper-core](https://github.com/vinfinit/beekeeper-core) - core application for hangover face recognition
 
-Participators:
+## Participators:
 * Vladimir Artemenko [https://github.com/vinfinit](https://github.com/vinfinit)
 * Dmitriy Medvedev [https://github.com/medvedev-dmitriy](https://github.com/medvedev-dmitriy)
 * Danik Tsyrkunov [https://github.com/blackazaru](https://github.com/blackazaru)
