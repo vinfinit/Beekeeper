@@ -8,8 +8,8 @@ You wake up in the morning... What the \*ack?! you're feeling really bad. You tr
 ## Development
 Application was moved to 3 separate repositories:
 1. [BeekeeperNative](https://github.com/vinfinit/BeekeeperNative) - react-native application for mobile platforms
-2. [beekeeper-server](https://github.com/vinfinit/beekeeper-server) - main node.js server
-3. [beekeeper-core](https://github.com/vinfinit/beekeeper-core) - core application for hangover face recognition
+2. [BeekeeperServer](https://github.com/vinfinit/BeekeeperServer) - main node.js server
+3. [BeekeeperCore](https://github.com/vinfinit/BeekeeperCore) - core application for hangover face recognition
 
 ## Participators
 * Vladimir Artemenko [https://github.com/vinfinit](https://github.com/vinfinit)
